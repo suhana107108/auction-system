@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: mini-auction
+    env: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        sync:false
+      - key: UPSTASH_REDIS_URL
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync:false
+      - key: FROM_EMAIL
+        sync:sunita.negi2002@gmail.com 
+      - key: WEB_BASE_URL
+        value:https://auction-system-9xjv.onrender.com

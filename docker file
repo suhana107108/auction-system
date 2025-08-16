@@ -1,0 +1,26 @@
+# -------- Build client --------
+FROM node:20-alpine AS client
+WORKDIR /app/client
+COPY client/package.json client/package-lock.json* ./ 
+RUN npm ci
+COPY client/ .
+RUN npm run build
+
+# -------- Build server --------
+FROM node:20-alpine AS server
+WORKDIR /app/server
+COPY server/package.json server/package-lock.json* ./ 
+RUN npm ci
+COPY server/ .
+# copy client build into server public
+RUN mkdir -p src/../public
+COPY --from=client /app/client/dist/ ./src/../public/
+
+# -------- Runtime --------
+FROM node:20-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=server /app/server /app/server
+WORKDIR /app/server
+EXPOSE 8080
+CMD ["npm", "start"]
